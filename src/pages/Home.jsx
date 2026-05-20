@@ -12,6 +12,7 @@ export default function Home() {
   const [visibleSections, setVisibleSections] = useState(new Set())
   const [trilhas, setTrilhas] = useState([])
   const [loading, setLoading] = useState(true)
+  const [errorMsg, setErrorMsg] = useState(null)
 
   useEffect(() => {
     if (location.hash === '#trilhas') {
@@ -24,9 +25,27 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTrilhas = async () => {
-      const { data } = await supabase.from('trilhas').select('*, modulos(id, aulas(id))').order('created_at', { ascending: true })
-      setTrilhas(data || [])
-      setLoading(false)
+      try {
+        const { data, error } = await supabase
+          .from('trilhas')
+          .select('*, modulos(id, aulas(id))')
+          .order('created_at', { ascending: true })
+        
+        if (error) {
+          console.error('Erro ao buscar trilhas do Supabase:', error)
+          setErrorMsg(error.message)
+          setTrilhas([])
+        } else {
+          setTrilhas(data || [])
+          setErrorMsg(null)
+        }
+      } catch (err) {
+        console.error('Erro de exceção ao buscar trilhas:', err)
+        setErrorMsg(err.message || String(err))
+        setTrilhas([])
+      } finally {
+        setLoading(false)
+      }
     }
     fetchTrilhas()
   }, [])
@@ -195,10 +214,10 @@ export default function Home() {
           </div>
 
           <div className="trilhas-grid">
-            {loading ? <p>Carregando trilhas...</p> : trilhas.map((trilha, i) => (
+            {loading ? <p>Carregando trilhas...</p> : errorMsg ? <p className="error-text">Erro ao carregar: {errorMsg}</p> : trilhas.map((trilha, i) => (
               <TrilhaCard key={trilha.id} trilha={trilha} index={i} />
             ))}
-            {!loading && trilhas.length === 0 && <p>Nenhuma trilha encontrada.</p>}
+            {!loading && !errorMsg && trilhas.length === 0 && <p>Nenhuma trilha encontrada.</p>}
           </div>
 
           {!user && (
