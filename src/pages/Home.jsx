@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import TrilhaCard from '../components/TrilhaCard'
 import { supabase } from '../lib/supabase'
@@ -7,10 +7,20 @@ import './Home.css'
 
 export default function Home() {
   const { user } = useAuth()
+  const location = useLocation()
   const heroRef = useRef(null)
   const [visibleSections, setVisibleSections] = useState(new Set())
   const [trilhas, setTrilhas] = useState([])
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (location.hash === '#trilhas') {
+      const el = document.getElementById('trilhas')
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100)
+      }
+    }
+  }, [location.hash])
 
   useEffect(() => {
     const fetchTrilhas = async () => {

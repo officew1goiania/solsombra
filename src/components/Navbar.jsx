@@ -49,7 +49,13 @@ export default function Navbar() {
           <Link
             to="/#trilhas"
             className="navbar__link"
-            onClick={() => setMenuOpen(false)}
+            onClick={() => {
+              setMenuOpen(false)
+              if (location.pathname === '/') {
+                const el = document.getElementById('trilhas')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
           >
             Trilhas
           </Link>
