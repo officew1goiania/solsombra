@@ -6,9 +6,20 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="loading-screen">
+      <div className="loading-screen" style={{ flexDirection: 'column', gap: '20px' }}>
         <div className="loading-spinner"></div>
         <p>Verificando acesso...</p>
+        <button 
+          className="btn-secondary btn-sm" 
+          onClick={() => {
+            localStorage.clear()
+            sessionStorage.clear()
+            window.location.href = '/solsombra/'
+          }}
+          style={{ marginTop: '20px', borderColor: 'rgba(255,255,255,0.2)' }}
+        >
+          Se travar aqui, clique para Limpar Cache e Sair
+        </button>
       </div>
     )
   }
