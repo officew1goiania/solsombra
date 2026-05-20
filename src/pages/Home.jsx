@@ -137,7 +137,7 @@ export default function Home() {
               { icon: '🎓', titulo: 'Aprendizado Estruturado', desc: 'Módulos organizados do básico ao avançado' },
               { icon: '🏆', titulo: 'Certificação de Conclusão', desc: 'Comprove seu conhecimento com badges' },
               { icon: '📱', titulo: 'Acesso em Qualquer Lugar', desc: 'Estude no celular, tablet ou computador' },
-              { icon: '🔄', titulo: 'Conteúdo Atualizado', desc: 'Material sempre atualizado pelo time W1' },
+              { icon: '🔄', titulo: 'Conteúdo Atualizado', desc: 'Material sempre atualizado pelo time W1 Goiânia' },
             ].map((card, i) => (
               <div key={i} className="about__feature-card">
                 <span className="about__feature-icon">{card.icon}</span>
@@ -196,7 +196,7 @@ export default function Home() {
         <div className="footer__container">
           <div className="footer__brand">
             <div className="footer__logo">
-              <span className="footer__logo-w">W1</span>
+              <span className="footer__logo-w">W1 Goiânia</span>
               <span className="footer__logo-text">Sol e Sombra · Goiânia</span>
             </div>
             <p>Portal de treinamentos do escritório W1 Goiânia. Todos os direitos reservados.</p>

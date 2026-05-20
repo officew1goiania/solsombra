@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import CertificateGenerator from '../components/CertificateGenerator'
 import { trilhas } from '../data/trilhas'
 import './TrilhaPage.css'
 
 export default function TrilhaPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const trilha = trilhas.find(t => t.id === id)
 
   const [activeAula, setActiveAula] = useState(null)
@@ -248,6 +251,14 @@ export default function TrilhaPage() {
                     </h3>
                     <p className="score-value">{quizScore}/{trilha.quiz.length} questões corretas</p>
                     <p className="score-pct">{Math.round((quizScore / trilha.quiz.length) * 100)}% de acerto</p>
+                    
+                    {quizScore >= trilha.quiz.length * 0.7 && (
+                      <CertificateGenerator 
+                        userName={user?.user_metadata?.full_name || user?.email}
+                        trilhaName={trilha.titulo}
+                        hours={trilha.duracao.replace(/\D/g, '') || '4'}
+                      />
+                    )}
                   </div>
 
                   {/* Show answers */}

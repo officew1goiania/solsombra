@@ -1,0 +1,189 @@
+.certificate-wrapper {
+  margin-top: 1rem;
+}
+
+.certificate-btn {
+  width: 100%;
+  justify-content: center;
+  background: linear-gradient(135deg, #32DDC9, #73A09F) !important;
+  color: #05171E !important;
+  border: none !important;
+  font-size: 1.05rem !important;
+  box-shadow: 0 4px 15px rgba(50, 221, 201, 0.3) !important;
+}
+
+.certificate-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(50, 221, 201, 0.4) !important;
+}
+
+.certificate-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Hidden area for rendering the PDF */
+.certificate-hidden-area {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  /* Make sure it's rendered but not visible on screen */
+}
+
+/* A4 Landscape Dimensions at 96 DPI: 1123px x 794px */
+.certificate-template {
+  width: 1123px;
+  height: 794px;
+  background: #05171E;
+  color: #FFFFFF;
+  padding: 40px;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.certificate-template__border-inner {
+  width: 100%;
+  height: 100%;
+  border: 4px solid #32DDC9;
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 50px 80px;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, rgba(50, 221, 201, 0.03) 0%, rgba(5, 23, 30, 0) 100%);
+}
+
+.certificate-template__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.certificate-template__logo {
+  font-size: 32px;
+  font-weight: 800;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-w {
+  background: #32DDC9;
+  color: #05171E;
+  padding: 5px 15px;
+  border-radius: 8px;
+}
+
+.certificate-template__subtitle {
+  color: #73A09F;
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.certificate-template__body {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.certificate-template__title {
+  font-size: 54px;
+  font-weight: 900;
+  color: #32DDC9;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.certificate-template__text {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+.certificate-template__name {
+  font-size: 64px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  border-bottom: 2px solid rgba(50, 221, 201, 0.3);
+  display: inline-block;
+  padding: 0 40px 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.certificate-template__course {
+  font-size: 38px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+.certificate-template__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 60px;
+}
+
+.certificate-template__signature {
+  text-align: center;
+}
+
+.signature-line {
+  width: 250px;
+  height: 2px;
+  background: #32DDC9;
+  margin-bottom: 15px;
+}
+
+.certificate-template__signature p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.certificate-template__date {
+  text-align: right;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+}
+
+/* Decorations */
+.certificate-template__deco-1 {
+  position: absolute;
+  top: -150px;
+  right: -150px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(50,221,201,0.15) 0%, rgba(5,23,30,0) 70%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.certificate-template__deco-2 {
+  position: absolute;
+  bottom: -150px;
+  left: -150px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(115,160,159,0.15) 0%, rgba(5,23,30,0) 70%);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}

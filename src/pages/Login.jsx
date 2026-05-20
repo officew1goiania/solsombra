@@ -43,7 +43,7 @@ export default function Login() {
             </Link>
 
             <div className="login__brand">
-              <span className="login__brand-w">W1</span>
+              <span className="login__brand-w">W1 Goiânia</span>
               <span className="login__brand-divider">·</span>
               <span className="login__brand-name">Sol e Sombra</span>
             </div>
@@ -97,7 +97,7 @@ export default function Login() {
           <div className="login__decoration-card">
             <div className="login__decoration-icon">🎓</div>
             <h3>Processo Sol e Sombra</h3>
-            <p>Trilhas de aprendizado para consultores W1</p>
+            <p>Trilhas de aprendizado para consultores W1 Goiânia</p>
           </div>
           <div className="login__decoration-stats">
             {[

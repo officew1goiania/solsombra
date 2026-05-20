@@ -95,7 +95,7 @@ export const trilhas = [
     id: 'consultoria-patrimonial',
     titulo: 'Consultoria Patrimonial',
     subtitulo: 'Planejamento financeiro 360°',
-    descricao: 'O produto mais premium da W1. Aprenda a realizar diagnósticos financeiros completos, apresentar soluções de investimento e construir relacionamentos de longo prazo.',
+    descricao: 'O produto mais premium da W1 Goiânia. Aprenda a realizar diagnósticos financeiros completos, apresentar soluções de investimento e construir relacionamentos de longo prazo.',
     icon: '💼',
     cor: '#305A5F',
     nivel: 'Intermediário → Avançado',
@@ -129,9 +129,9 @@ export const trilhas = [
   },
   {
     id: 'business',
-    titulo: 'Business W1',
+    titulo: 'Business W1 Goiânia',
     subtitulo: 'Construa seu escritório de sucesso',
-    descricao: 'Entenda o modelo de negócio da W1, como estruturar sua equipe, recrutar talentos e liderar com propósito para escalar seus resultados.',
+    descricao: 'Entenda o modelo de negócio da W1 Goiânia, como estruturar sua equipe, recrutar talentos e liderar com propósito para escalar seus resultados.',
     icon: '🚀',
     cor: '#32DDC9',
     nivel: 'Todos os níveis',
@@ -142,9 +142,9 @@ export const trilhas = [
     modulos_lista: [
       {
         id: 1,
-        titulo: 'Modelo de Negócio W1',
+        titulo: 'Modelo de Negócio W1 Goiânia',
         aulas: [
-          { id: 1, titulo: 'Como funciona a W1: visão geral', duracao: '22min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
+          { id: 1, titulo: 'Como funciona a W1 Goiânia: visão geral', duracao: '22min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
           { id: 2, titulo: 'Seu papel como consultor e líder', duracao: '20min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
         ]
       },
@@ -153,19 +153,19 @@ export const trilhas = [
         titulo: 'Recrutamento e Seleção',
         aulas: [
           { id: 3, titulo: 'Como identificar talentos', duracao: '25min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
-          { id: 4, titulo: 'O processo seletivo W1', duracao: '30min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
+          { id: 4, titulo: 'O processo seletivo W1 Goiânia', duracao: '30min', youtube_id: 'dQw4w9WgXcQ', concluida: false },
         ]
       },
     ],
     quiz: [
-      { pergunta: 'Qual é a base do modelo de negócio W1?', opcoes: ['Apenas comissões', 'Consultoria financeira integrada com recorrência', 'Captação de investimentos', 'Venda de seguros apenas'], correta: 1 },
+      { pergunta: 'Qual é a base do modelo de negócio W1 Goiânia?', opcoes: ['Apenas comissões', 'Consultoria financeira integrada com recorrência', 'Captação de investimentos', 'Venda de seguros apenas'], correta: 1 },
     ]
   },
   {
     id: 'treinamento-entregas',
     titulo: 'Treinamento de Entregas',
     subtitulo: 'Excelência operacional nos processos',
-    descricao: 'Domine os processos internos da W1: documentação, fluxos de entrega, qualidade no atendimento e padronização dos serviços.',
+    descricao: 'Domine os processos internos da W1 Goiânia: documentação, fluxos de entrega, qualidade no atendimento e padronização dos serviços.',
     icon: '📦',
     cor: '#73A09F',
     nivel: 'Iniciante',

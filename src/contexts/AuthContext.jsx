@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
   const [authorized, setAuthorized] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     // Get initial session
@@ -30,6 +31,7 @@ export function AuthProvider({ children }) {
           await checkAuthorization(session.user.email)
         } else {
           setAuthorized(false)
+          setIsAdmin(false)
           setLoading(false)
         }
       }
@@ -42,13 +44,15 @@ export function AuthProvider({ children }) {
     try {
       const { data, error } = await supabase
         .from('authorized_users')
-        .select('email')
+        .select('email, is_admin')
         .eq('email', email)
         .single()
 
       setAuthorized(!error && !!data)
+      setIsAdmin(!!data?.is_admin)
     } catch {
       setAuthorized(false)
+      setIsAdmin(false)
     } finally {
       setLoading(false)
     }
@@ -73,7 +77,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, authorized, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, authorized, isAdmin, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   )

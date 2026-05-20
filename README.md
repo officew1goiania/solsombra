@@ -31,26 +31,80 @@ VITE_SUPABASE_ANON_KEY=eyJhbGci...
 Execute este SQL no Supabase SQL Editor:
 
 ```sql
--- Tabela de usuários autorizados
+-- 1. Tabela de usuários autorizados
 CREATE TABLE authorized_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   nome TEXT,
+  is_admin BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Habilitar Row Level Security
 ALTER TABLE authorized_users ENABLE ROW LEVEL SECURITY;
 
--- Política: qualquer usuário autenticado pode verificar seu próprio email
+-- Políticas para authorized_users
+-- Todos autenticados podem ler para checar permissão
 CREATE POLICY "Users can check their own authorization"
-  ON authorized_users
-  FOR SELECT
-  USING (auth.jwt() ->> 'email' = email);
+  ON authorized_users FOR SELECT USING (auth.jwt() ->> 'email' = email);
 
--- Adicione emails autorizados:
-INSERT INTO authorized_users (email, nome) VALUES
-  ('email@exemplo.com', 'Nome do Consultor');
+-- Admins podem ler tudo
+CREATE POLICY "Admins can select all"
+  ON authorized_users FOR SELECT USING (
+    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
+  );
+
+-- Admins podem inserir/atualizar/deletar
+CREATE POLICY "Admins can insert"
+  ON authorized_users FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
+  );
+CREATE POLICY "Admins can update"
+  ON authorized_users FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
+  );
+CREATE POLICY "Admins can delete"
+  ON authorized_users FOR DELETE USING (
+    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
+  );
+
+-- Adicione seu email como o primeiro ADMIN
+INSERT INTO authorized_users (email, nome, is_admin) VALUES
+  ('SEU-EMAIL@gmail.com', 'Seu Nome', true);
+
+
+-- 2. Tabela de Progresso (Aulas Concluídas)
+CREATE TABLE user_progress (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_email TEXT NOT NULL,
+  trilha_id TEXT NOT NULL,
+  aula_id INTEGER NOT NULL,
+  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_email, trilha_id, aula_id)
+);
+
+ALTER TABLE user_progress ENABLE ROW LEVEL SECURITY;
+
+-- Usuários podem ler, inserir e deletar o próprio progresso
+CREATE POLICY "Users can manage their own progress"
+  ON user_progress FOR ALL USING (auth.jwt() ->> 'email' = user_email);
+
+
+-- 3. Tabela de Notas dos Quizzes
+CREATE TABLE user_quiz_results (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_email TEXT NOT NULL,
+  trilha_id TEXT NOT NULL,
+  score_percentage INTEGER NOT NULL,
+  passed BOOLEAN NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE user_quiz_results ENABLE ROW LEVEL SECURITY;
+
+-- Usuários podem ler e inserir as próprias notas
+CREATE POLICY "Users can manage their own quiz results"
+  ON user_quiz_results FOR ALL USING (auth.jwt() ->> 'email' = user_email);
 ```
 
 ### 5. Inicie o servidor de desenvolvimento

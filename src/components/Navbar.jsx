@@ -6,7 +6,7 @@ import './Navbar.css'
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const { user, signOut } = useAuth()
+  const { user, isAdmin, signOut } = useAuth()
   const location = useLocation()
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Navbar() {
       <div className="navbar__container">
         <Link to="/" className="navbar__brand">
           <div className="navbar__logo">
-            <span className="navbar__logo-w">W1</span>
+            <span className="navbar__logo-w">W1 Goiânia</span>
             <div className="navbar__logo-divider"></div>
             <div className="navbar__logo-text">
               <span className="navbar__logo-sol">Sol</span>
@@ -62,6 +62,15 @@ export default function Navbar() {
               >
                 Meu Painel
               </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={`navbar__link ${location.pathname === '/admin' ? 'navbar__link--active' : ''}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              )}
               <div className="navbar__user">
                 <img
                   src={user.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata?.full_name || user.email)}&background=32DDC9&color=05171E`}
