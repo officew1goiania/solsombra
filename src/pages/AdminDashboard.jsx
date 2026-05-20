@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import AdminContentManager from './AdminContentManager'
 import './AdminDashboard.css'
 
 export default function AdminDashboard() {
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
   const [newName, setNewName] = useState('')
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
-  const [activeTab, setActiveTab] = useState('users') // 'users' or 'reports'
+  const [activeTab, setActiveTab] = useState('content') // 'users', 'reports', or 'content'
 
   useEffect(() => {
     fetchUsers()
@@ -102,6 +103,12 @@ export default function AdminDashboard() {
         </div>
 
         <div className="admin-dash__tabs">
+          <button 
+            className={`admin-dash__tab ${activeTab === 'content' ? 'active' : ''}`}
+            onClick={() => setActiveTab('content')}
+          >
+            📚 Gestão de Conteúdo
+          </button>
           <button 
             className={`admin-dash__tab ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
@@ -209,6 +216,10 @@ export default function AdminDashboard() {
               </p>
             </div>
           </div>
+        )}
+
+        {activeTab === 'content' && (
+          <AdminContentManager />
         )}
       </div>
     </div>

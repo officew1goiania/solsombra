@@ -3,14 +3,15 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import CertificateGenerator from '../components/CertificateGenerator'
-import { trilhas } from '../data/trilhas'
 import './TrilhaPage.css'
 
 export default function TrilhaPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const trilha = trilhas.find(t => t.id === id)
+  
+  const [trilha, setTrilha] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const [activeAula, setActiveAula] = useState(null)
   const [activeModulo, setActiveModulo] = useState(0)
@@ -20,9 +21,66 @@ export default function TrilhaPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [completedAulas, setCompletedAulas] = useState([])
 
+  // Fetch Trilha Data from Supabase
+  useEffect(() => {
+    const fetchTrilhaData = async () => {
+      setLoading(true)
+      
+      // Fetch Trilha details
+      const { data: trilhaData, error: trilhaError } = await supabase
+        .from('trilhas')
+        .select('*')
+        .eq('id', id)
+        .single()
+        
+      if (trilhaError || !trilhaData) {
+        navigate('/dashboard')
+        return
+      }
+
+      // Fetch Módulos and Aulas
+      const { data: modulosData } = await supabase
+        .from('modulos')
+        .select('*, aulas(*)')
+        .eq('trilha_id', id)
+        .order('ordem')
+
+      // Fetch Quiz
+      const { data: quizData } = await supabase
+        .from('quizzes')
+        .select('*')
+        .eq('trilha_id', id)
+        .order('ordem')
+
+      // Sort aulas inside modulos
+      if (modulosData) {
+        modulosData.forEach(m => {
+          if (m.aulas) {
+            m.aulas.sort((a, b) => a.ordem - b.ordem)
+          }
+        })
+      }
+
+      const fullTrilha = {
+        ...trilhaData,
+        modulos: modulosData || [],
+        quiz: quizData || []
+      }
+
+      setTrilha(fullTrilha)
+      setLoading(false)
+
+      if (fullTrilha.modulos.length > 0 && fullTrilha.modulos[0].aulas?.length > 0) {
+        setActiveAula(fullTrilha.modulos[0].aulas[0])
+      }
+    }
+
+    fetchTrilhaData()
+  }, [id, navigate])
+
   // Fetch progress from Supabase
   useEffect(() => {
-    if (!user) return
+    if (!user || !id) return
     const fetchProgress = async () => {
       const { data } = await supabase
         .from('user_progress')
@@ -40,7 +98,6 @@ export default function TrilhaPage() {
   const toggleAulaConcluida = async (aulaId) => {
     const isCompleted = completedAulas.includes(aulaId)
     
-    // Update local state immediately for fast feedback
     if (isCompleted) {
       setCompletedAulas(prev => prev.filter(a => a !== aulaId))
       await supabase
@@ -55,20 +112,10 @@ export default function TrilhaPage() {
     }
   }
 
-  useEffect(() => {
-    if (!trilha) {
-      navigate('/dashboard')
-      return
-    }
-    // Set first aula as active by default
-    if (trilha.modulos_lista?.length > 0) {
-      setActiveAula(trilha.modulos_lista[0].aulas[0])
-    }
-  }, [trilha, navigate])
-
+  if (loading) return <div className="loading-screen"><div className="loading-spinner"></div><p>Carregando trilha...</p></div>
   if (!trilha) return null
 
-  const allAulas = trilha.modulos_lista?.flatMap(m => m.aulas) || []
+  const allAulas = trilha.modulos?.flatMap(m => m.aulas || []) || []
   const currentIndex = allAulas.findIndex(a => a.id === activeAula?.id)
   const prevAula = currentIndex > 0 ? allAulas[currentIndex - 1] : null
   const nextAula = currentIndex < allAulas.length - 1 ? allAulas[currentIndex + 1] : null
@@ -81,8 +128,7 @@ export default function TrilhaPage() {
   const handleQuizSubmit = async () => {
     setQuizSubmitted(true)
     
-    // Save quiz result to Supabase
-    if (user) {
+    if (user && trilha.quiz) {
       const scorePercentage = Math.round((quizScore / trilha.quiz.length) * 100)
       const passed = scorePercentage >= 70
       
@@ -131,11 +177,11 @@ export default function TrilhaPage() {
         <aside className={`trilha-page__sidebar ${sidebarOpen ? 'trilha-page__sidebar--open' : ''}`}>
           <div className="trilha-page__sidebar-header">
             <h3>{trilha.titulo}</h3>
-            <p>{trilha.modulos} módulos · {allAulas.length} aulas · {trilha.duracao}</p>
+            <p>{trilha.modulos?.length || 0} módulos · {allAulas.length} aulas · {trilha.duracao}</p>
           </div>
 
           <div className="trilha-page__modulos">
-            {trilha.modulos_lista?.map((modulo, mi) => (
+            {trilha.modulos?.map((modulo, mi) => (
               <div key={modulo.id} className="trilha-page__modulo">
                 <button
                   className={`trilha-page__modulo-header ${activeModulo === mi ? 'active' : ''}`}
@@ -154,7 +200,7 @@ export default function TrilhaPage() {
 
                 {activeModulo === mi && (
                   <div className="trilha-page__aulas">
-                    {modulo.aulas.map((aula) => (
+                    {modulo.aulas?.map((aula) => (
                       <button
                         key={aula.id}
                         className={`trilha-page__aula-item ${activeAula?.id === aula.id ? 'active' : ''} ${completedAulas.includes(aula.id) ? 'concluida' : ''}`}
@@ -168,13 +214,14 @@ export default function TrilhaPage() {
                         <span className="trilha-page__aula-dur">{aula.duracao}</span>
                       </button>
                     ))}
+                    {!modulo.aulas?.length && <p style={{padding: '0.5rem 1rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>Em breve...</p>}
                   </div>
                 )}
               </div>
             ))}
 
             {/* Quiz button */}
-            {trilha.quiz && (
+            {trilha.quiz && trilha.quiz.length > 0 && (
               <button
                 className={`trilha-page__quiz-trigger ${showQuiz ? 'active' : ''}`}
                 onClick={() => { setShowQuiz(true); setActiveAula(null) }}
@@ -206,12 +253,12 @@ export default function TrilhaPage() {
 
               {/* Aula Info */}
               <div className="trilha-page__aula-info">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <h2>{activeAula.titulo}</h2>
                   <button 
                     className={`btn-sm ${completedAulas.includes(activeAula.id) ? 'btn-secondary' : 'btn-primary'}`}
                     onClick={() => toggleAulaConcluida(activeAula.id)}
-                    style={{ marginLeft: '1rem', whiteSpace: 'nowrap' }}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     {completedAulas.includes(activeAula.id) ? '✓ Concluída' : 'Marcar como Concluída'}
                   </button>
@@ -249,20 +296,22 @@ export default function TrilhaPage() {
                     </svg>
                   </button>
                 ) : (
-                  <button
-                    className="trilha-page__nav-btn trilha-page__nav-btn--next trilha-page__nav-btn--quiz"
-                    onClick={() => setShowQuiz(true)}
-                    id="btn-go-quiz"
-                  >
-                    Fazer Avaliação 📝
-                  </button>
+                  trilha.quiz && trilha.quiz.length > 0 && (
+                    <button
+                      className="trilha-page__nav-btn trilha-page__nav-btn--next trilha-page__nav-btn--quiz"
+                      onClick={() => setShowQuiz(true)}
+                      id="btn-go-quiz"
+                    >
+                      Fazer Avaliação 📝
+                    </button>
+                  )
                 )}
               </div>
             </div>
           )}
 
           {/* Quiz */}
-          {showQuiz && trilha.quiz && (
+          {showQuiz && trilha.quiz && trilha.quiz.length > 0 && (
             <div className="trilha-page__quiz">
               <div className="trilha-page__quiz-header">
                 <h2>📝 Avaliação Final — {trilha.titulo}</h2>
