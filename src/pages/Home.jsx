@@ -2,13 +2,24 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import TrilhaCard from '../components/TrilhaCard'
-import { trilhas } from '../data/trilhas'
+import { supabase } from '../lib/supabase'
 import './Home.css'
 
 export default function Home() {
   const { user } = useAuth()
   const heroRef = useRef(null)
   const [visibleSections, setVisibleSections] = useState(new Set())
+  const [trilhas, setTrilhas] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchTrilhas = async () => {
+      const { data } = await supabase.from('trilhas').select('*, modulos(id, aulas(id))').order('created_at', { ascending: true })
+      setTrilhas(data || [])
+      setLoading(false)
+    }
+    fetchTrilhas()
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -85,17 +96,19 @@ export default function Home() {
 
           <div className="hero__stats">
             <div className="hero__stat">
-              <span className="hero__stat-number">6</span>
+              <span className="hero__stat-number">{loading ? '-' : trilhas.length}</span>
               <span className="hero__stat-label">Trilhas</span>
             </div>
             <div className="hero__stat-divider"></div>
             <div className="hero__stat">
-              <span className="hero__stat-number">138</span>
+              <span className="hero__stat-number">
+                {loading ? '-' : trilhas.reduce((acc, t) => acc + (t.modulos?.reduce((a, m) => a + (m.aulas?.length || 0), 0) || 0), 0)}
+              </span>
               <span className="hero__stat-label">Aulas</span>
             </div>
             <div className="hero__stat-divider"></div>
             <div className="hero__stat">
-              <span className="hero__stat-number">48h+</span>
+              <span className="hero__stat-number">Variável</span>
               <span className="hero__stat-label">Conteúdo</span>
             </div>
           </div>
@@ -172,9 +185,10 @@ export default function Home() {
           </div>
 
           <div className="trilhas-grid">
-            {trilhas.map((trilha, i) => (
+            {loading ? <p>Carregando trilhas...</p> : trilhas.map((trilha, i) => (
               <TrilhaCard key={trilha.id} trilha={trilha} index={i} />
             ))}
+            {!loading && trilhas.length === 0 && <p>Nenhuma trilha encontrada.</p>}
           </div>
 
           {!user && (

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import AdminContentManager from './AdminContentManager'
+import AdminContentManager from '../components/AdminContentManager'
 import './AdminDashboard.css'
 
 export default function AdminDashboard() {
