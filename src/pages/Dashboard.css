@@ -1,0 +1,304 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--color-bg-dark);
+  padding-top: 90px;
+}
+
+.dashboard__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Header */
+.dashboard__header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: center;
+  background: rgba(10, 28, 40, 0.5);
+  border: 1px solid rgba(50, 221, 201, 0.1);
+  border-radius: 24px;
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.dashboard__welcome {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.dashboard__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--color-accent);
+  object-fit: cover;
+}
+
+.dashboard__greeting {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.2rem;
+}
+
+.dashboard__name {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-white);
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard__email {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  opacity: 0.7;
+}
+
+.dashboard__overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.dashboard__stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.dashboard__stat-card:hover {
+  background: rgba(50, 221, 201, 0.06);
+  border-color: rgba(50, 221, 201, 0.15);
+}
+
+.dashboard__stat-icon {
+  font-size: 1.5rem;
+}
+
+.dashboard__stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.dashboard__stat-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Section */
+.dashboard__section-header {
+  margin-bottom: 1.5rem;
+}
+
+.dashboard__section-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 0.3rem;
+}
+
+.dashboard__section-header p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Trilhas list */
+.dashboard__trilhas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
+}
+
+.dashboard__trilha-card {
+  background: rgba(10, 28, 40, 0.5);
+  border: 1px solid rgba(50, 221, 201, 0.08);
+  border-radius: 18px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  animation: slideUp 0.5s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard__trilha-card:hover {
+  border-color: rgba(50, 221, 201, 0.2);
+  background: rgba(10, 28, 40, 0.7);
+  transform: translateY(-4px);
+}
+
+.dashboard__trilha-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.dashboard__trilha-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.dashboard__trilha-header h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.dashboard__trilha-header p {
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  opacity: 0.75;
+}
+
+.dashboard__trilha-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: rgba(50, 221, 201, 0.1);
+  border: 1px solid rgba(50, 221, 201, 0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+}
+
+.dashboard__trilha-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.dashboard__trilha-meta span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.dashboard__trilha-nivel {
+  background: rgba(115, 160, 159, 0.1);
+  border: 1px solid rgba(115, 160, 159, 0.2);
+  color: var(--color-green-mid) !important;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+}
+
+.dashboard__trilha-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dashboard__trilha-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dashboard__trilha-progress-fill {
+  height: 100%;
+  background: var(--bar-color, var(--color-accent));
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.dashboard__trilha-progress span {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard__trilha-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, rgba(50, 221, 201, 0.1), rgba(50, 221, 201, 0.05));
+  border: 1px solid rgba(50, 221, 201, 0.2);
+  border-radius: 10px;
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.dashboard__trilha-btn:hover {
+  background: var(--color-accent);
+  color: var(--color-bg-dark);
+  border-color: var(--color-accent);
+}
+
+/* Quick Start */
+.dashboard__quickstart {
+  background: linear-gradient(135deg, rgba(50, 221, 201, 0.08), rgba(48, 90, 95, 0.08));
+  border: 1px solid rgba(50, 221, 201, 0.15);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.dashboard__quickstart-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 0.4rem;
+}
+
+.dashboard__quickstart-content p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard__quickstart-content strong {
+  color: var(--color-accent);
+}
+
+@media (max-width: 900px) {
+  .dashboard__header {
+    grid-template-columns: 1fr;
+  }
+  .dashboard__overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard__quickstart {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard__overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard__trilhas {
+    grid-template-columns: 1fr;
+  }
+}

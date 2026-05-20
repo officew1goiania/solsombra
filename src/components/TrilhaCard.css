@@ -1,0 +1,202 @@
+.trilha-card {
+  position: relative;
+  background: rgba(10, 32, 48, 0.6);
+  border: 1px solid rgba(50, 221, 201, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  animation: cardFadeIn 0.6s ease both;
+  overflow: hidden;
+}
+
+.trilha-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--card-color, #32DDC9), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.trilha-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(50, 221, 201, 0.04), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.trilha-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(50, 221, 201, 0.25);
+  box-shadow: 0 20px 60px rgba(5, 23, 30, 0.4), 0 0 0 1px rgba(50, 221, 201, 0.1);
+}
+
+.trilha-card:hover::before {
+  opacity: 1;
+}
+
+.trilha-card:hover::after {
+  opacity: 1;
+}
+
+.trilha-card--destaque {
+  border-color: rgba(50, 221, 201, 0.2);
+  background: rgba(10, 32, 48, 0.8);
+}
+
+.trilha-card--destaque::before {
+  opacity: 0.6;
+}
+
+/* Badge */
+.trilha-card__badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: linear-gradient(135deg, rgba(50, 221, 201, 0.15), rgba(50, 221, 201, 0.05));
+  border: 1px solid rgba(50, 221, 201, 0.3);
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 100px;
+  letter-spacing: 0.5px;
+}
+
+/* Header */
+.trilha-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trilha-card__icon {
+  font-size: 2.4rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(50, 221, 201, 0.3));
+}
+
+.trilha-card__nivel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-green-mid);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: rgba(115, 160, 159, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+  border: 1px solid rgba(115, 160, 159, 0.2);
+}
+
+/* Body */
+.trilha-card__titulo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.2;
+}
+
+.trilha-card__subtitulo {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+
+.trilha-card__descricao {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Stats */
+.trilha-card__stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.trilha-card__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.trilha-card__stat-icon {
+  font-size: 0.85rem;
+}
+
+/* Progress */
+.trilha-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.trilha-card__progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.trilha-card__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-green-mid));
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.trilha-card__progress-text {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Button */
+.trilha-card__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, rgba(50, 221, 201, 0.12), rgba(50, 221, 201, 0.06));
+  border: 1px solid rgba(50, 221, 201, 0.25);
+  border-radius: 12px;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.trilha-card__btn:hover {
+  background: var(--color-accent);
+  color: var(--color-bg-dark);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
