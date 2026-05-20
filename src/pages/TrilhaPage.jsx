@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import CertificateGenerator from '../components/CertificateGenerator'
 import { trilhas } from '../data/trilhas'
 import './TrilhaPage.css'
@@ -17,6 +18,42 @@ export default function TrilhaPage() {
   const [quizAnswers, setQuizAnswers] = useState({})
   const [quizSubmitted, setQuizSubmitted] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [completedAulas, setCompletedAulas] = useState([])
+
+  // Fetch progress from Supabase
+  useEffect(() => {
+    if (!user) return
+    const fetchProgress = async () => {
+      const { data } = await supabase
+        .from('user_progress')
+        .select('aula_id')
+        .eq('user_email', user.email)
+        .eq('trilha_id', id)
+      
+      if (data) {
+        setCompletedAulas(data.map(d => d.aula_id))
+      }
+    }
+    fetchProgress()
+  }, [id, user])
+
+  const toggleAulaConcluida = async (aulaId) => {
+    const isCompleted = completedAulas.includes(aulaId)
+    
+    // Update local state immediately for fast feedback
+    if (isCompleted) {
+      setCompletedAulas(prev => prev.filter(a => a !== aulaId))
+      await supabase
+        .from('user_progress')
+        .delete()
+        .match({ user_email: user.email, trilha_id: id, aula_id: aulaId })
+    } else {
+      setCompletedAulas(prev => [...prev, aulaId])
+      await supabase
+        .from('user_progress')
+        .insert([{ user_email: user.email, trilha_id: id, aula_id: aulaId }])
+    }
+  }
 
   useEffect(() => {
     if (!trilha) {
@@ -41,8 +78,23 @@ export default function TrilhaPage() {
     setQuizAnswers(prev => ({ ...prev, [idx]: answerIdx }))
   }
 
-  const handleQuizSubmit = () => {
+  const handleQuizSubmit = async () => {
     setQuizSubmitted(true)
+    
+    // Save quiz result to Supabase
+    if (user) {
+      const scorePercentage = Math.round((quizScore / trilha.quiz.length) * 100)
+      const passed = scorePercentage >= 70
+      
+      await supabase
+        .from('user_quiz_results')
+        .insert([{
+          user_email: user.email,
+          trilha_id: id,
+          score_percentage: scorePercentage,
+          passed: passed
+        }])
+    }
   }
 
   const quizScore = trilha.quiz
@@ -105,12 +157,12 @@ export default function TrilhaPage() {
                     {modulo.aulas.map((aula) => (
                       <button
                         key={aula.id}
-                        className={`trilha-page__aula-item ${activeAula?.id === aula.id ? 'active' : ''} ${aula.concluida ? 'concluida' : ''}`}
+                        className={`trilha-page__aula-item ${activeAula?.id === aula.id ? 'active' : ''} ${completedAulas.includes(aula.id) ? 'concluida' : ''}`}
                         onClick={() => { setActiveAula(aula); setShowQuiz(false) }}
                         id={`aula-btn-${aula.id}`}
                       >
                         <span className="trilha-page__aula-status">
-                          {aula.concluida ? '✓' : '▶'}
+                          {completedAulas.includes(aula.id) ? '✓' : '▶'}
                         </span>
                         <span className="trilha-page__aula-titulo">{aula.titulo}</span>
                         <span className="trilha-page__aula-dur">{aula.duracao}</span>
@@ -154,7 +206,16 @@ export default function TrilhaPage() {
 
               {/* Aula Info */}
               <div className="trilha-page__aula-info">
-                <h2>{activeAula.titulo}</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <h2>{activeAula.titulo}</h2>
+                  <button 
+                    className={`btn-sm ${completedAulas.includes(activeAula.id) ? 'btn-secondary' : 'btn-primary'}`}
+                    onClick={() => toggleAulaConcluida(activeAula.id)}
+                    style={{ marginLeft: '1rem', whiteSpace: 'nowrap' }}
+                  >
+                    {completedAulas.includes(activeAula.id) ? '✓ Concluída' : 'Marcar como Concluída'}
+                  </button>
+                </div>
                 <div className="trilha-page__aula-meta">
                   <span>⏱️ {activeAula.duracao}</span>
                   <span>📖 {trilha.titulo}</span>

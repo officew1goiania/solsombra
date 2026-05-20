@@ -48,25 +48,23 @@ ALTER TABLE authorized_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can check their own authorization"
   ON authorized_users FOR SELECT USING (auth.jwt() ->> 'email' = email);
 
+-- Função segura para checar admin sem causar loop infinito
+CREATE OR REPLACE FUNCTION public.is_admin_user()
+RETURNS BOOLEAN AS $$
+  SELECT is_admin FROM public.authorized_users WHERE email = auth.jwt() ->> 'email' LIMIT 1;
+$$ LANGUAGE sql SECURITY DEFINER;
+
 -- Admins podem ler tudo
 CREATE POLICY "Admins can select all"
-  ON authorized_users FOR SELECT USING (
-    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
-  );
+  ON authorized_users FOR SELECT USING ( public.is_admin_user() );
 
 -- Admins podem inserir/atualizar/deletar
 CREATE POLICY "Admins can insert"
-  ON authorized_users FOR INSERT WITH CHECK (
-    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
-  );
+  ON authorized_users FOR INSERT WITH CHECK ( public.is_admin_user() );
 CREATE POLICY "Admins can update"
-  ON authorized_users FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
-  );
+  ON authorized_users FOR UPDATE USING ( public.is_admin_user() );
 CREATE POLICY "Admins can delete"
-  ON authorized_users FOR DELETE USING (
-    EXISTS (SELECT 1 FROM authorized_users WHERE email = auth.jwt() ->> 'email' AND is_admin = true)
-  );
+  ON authorized_users FOR DELETE USING ( public.is_admin_user() );
 
 -- Adicione seu email como o primeiro ADMIN
 INSERT INTO authorized_users (email, nome, is_admin) VALUES
