@@ -2,7 +2,10 @@ import { Link } from 'react-router-dom'
 import './TrilhaCard.css'
 
 export default function TrilhaCard({ trilha, index }) {
-  const totalAulas = trilha.modulos_lista?.reduce((acc, m) => acc + m.aulas.length, 0) || trilha.aulas
+  const modulosCount = Array.isArray(trilha.modulos) ? trilha.modulos.length : (trilha.modulos || 0);
+  const totalAulas = Array.isArray(trilha.modulos) 
+    ? trilha.modulos.reduce((acc, m) => acc + (m.aulas?.length || 0), 0) 
+    : (trilha.aulas || 0);
 
   return (
     <div
@@ -27,7 +30,7 @@ export default function TrilhaCard({ trilha, index }) {
       <div className="trilha-card__stats">
         <div className="trilha-card__stat">
           <span className="trilha-card__stat-icon">📚</span>
-          <span>{trilha.modulos} módulos</span>
+          <span>{modulosCount} módulos</span>
         </div>
         <div className="trilha-card__stat">
           <span className="trilha-card__stat-icon">▶️</span>

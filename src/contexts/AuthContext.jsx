@@ -45,18 +45,11 @@ export function AuthProvider({ children }) {
 
   const checkAuthorization = async (email) => {
     try {
-      // Timeout of 10 seconds to prevent infinite loading if Supabase network hangs
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout')), 10000)
-      )
-
-      const queryPromise = supabase
+      const { data, error } = await supabase
         .from('authorized_users')
         .select('email, is_admin')
         .eq('email', email)
         .single()
-
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise])
 
       setAuthorized(!error && !!data)
       setIsAdmin(!!data?.is_admin)
